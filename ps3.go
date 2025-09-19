@@ -46,7 +46,7 @@ func Init(accessKey, secretKey string, buckets []Bucket) {
 }
 
 func newClient(bucket Bucket, accessKey, secretKey string) (*client, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-west-1"))
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-west-2"))
 	if err != nil {
 		return nil, err
 	}
