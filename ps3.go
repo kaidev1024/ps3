@@ -28,31 +28,13 @@ type (
 	}
 )
 
-const (
-	BucketUser       Bucket = "worena-user"
-	BucketTeam       Bucket = "worena-team"
-	BucketCollection Bucket = "worena-collection"
-	BucketArena      Bucket = "worena-arena"
-	BucketEvent      Bucket = "worena-event"
-)
-
-// TODO: need to refactor the logic for default images
-const DefaultFolder = "default"
-
 func (b Bucket) String() string {
 	return string(b)
 }
 
 var clients = make(map[Bucket]*client)
-var buckets = []Bucket{
-	BucketUser,
-	BucketTeam,
-	BucketCollection,
-	BucketArena,
-	BucketEvent,
-}
 
-func Init(accessKey, secretKey string) {
+func Init(accessKey, secretKey string, buckets []Bucket) {
 	for _, bucket := range buckets {
 		client, err := newClient(bucket, accessKey, secretKey)
 		if err != nil {
