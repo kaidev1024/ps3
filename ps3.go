@@ -58,20 +58,20 @@ func newClient(bucket Bucket, accessKey, secretKey string) (*client, error) {
 	}, nil
 }
 
-func (sc *client) UploadFile(file io.Reader, key string) error {
-	_, err := sc.client.PutObject(context.TODO(), &s3.PutObjectInput{
+func (c *client) UploadFile(file io.Reader, key string) error {
+	_, err := c.client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Body:   file,
-		Bucket: &sc.bucket,
+		Bucket: &c.bucket,
 		Key:    &key,
 	})
 	return err
 }
 
-func (sc *client) GetPresignedUrl(key string) (string, error) {
-	presignClient := s3.NewPresignClient(sc.client)
+func (c *client) GetPresignedUrl(key string) (string, error) {
+	presignClient := s3.NewPresignClient(c.client)
 	presignedUrl, err := presignClient.PresignGetObject(context.Background(),
 		&s3.GetObjectInput{
-			Bucket: &sc.bucket,
+			Bucket: &c.bucket,
 			Key:    &key,
 		},
 		s3.WithPresignExpires(time.Hour)) // TODO: need to adjust the expiration time
