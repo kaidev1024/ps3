@@ -32,9 +32,11 @@ func (b Bucket) String() string {
 	return string(b)
 }
 
+var awsRegion string
+
 var clients = make(map[Bucket]*client)
 
-func Init(accessKey, secretKey string, buckets []Bucket) {
+func Init(accessKey, secretKey string, buckets []Bucket, region string) {
 	for _, bucket := range buckets {
 		client, err := newClient(bucket, accessKey, secretKey)
 		if err != nil {
@@ -42,11 +44,12 @@ func Init(accessKey, secretKey string, buckets []Bucket) {
 		}
 		clients[bucket] = client
 	}
+	awsRegion = region
 	log.Println("s3Clients initialized")
 }
 
 func newClient(bucket Bucket, accessKey, secretKey string) (*client, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-west-2"))
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(awsRegion))
 	if err != nil {
 		return nil, err
 	}
