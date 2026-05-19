@@ -13,11 +13,11 @@ import (
 )
 
 var c *s3.Client
-var bucket string
+var bucketName string
 
 const cdnBaseURL = "image.buddiesnearby.com"
 
-func Init(accessKey, secretKey, accountID, bucketName string) {
+func Init(accessKey, secretKey, accountID, _bucketName string) {
 	endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID)
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion("auto"),
@@ -29,7 +29,7 @@ func Init(accessKey, secretKey, accountID, bucketName string) {
 	c = s3.NewFromConfig(cfg, func(o *s3.Options) {
 		o.BaseEndpoint = aws.String(endpoint)
 	})
-	bucket = bucketName
+	bucketName = _bucketName
 	log.Println("r2 client initialized")
 }
 
@@ -46,7 +46,7 @@ func GetPresignedUploadURL(key string, expiry time.Duration) (string, error) {
 	presigner := s3.NewPresignClient(c)
 	result, err := presigner.PresignPutObject(context.Background(),
 		&s3.PutObjectInput{
-			Bucket: &bucket,
+			Bucket: &bucketName,
 			Key:    &key,
 		},
 		s3.WithPresignExpires(expiry),
