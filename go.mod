@@ -1,4 +1,4 @@
-module github.com/kaidev1024/ps3
+module github.com/kaidev1024/ps3/v2
 
 go 1.23.4
 
