@@ -10,12 +10,20 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/google/uuid"
 )
 
 var c *s3.Client
 var bucketName string
 
 const cdnBaseURL = "image.buddiesnearby.com"
+
+var allowedContentTypes = map[string]bool{
+	"image/jpeg": true,
+	"image/png":  true,
+	"image/webp": true,
+	"image/gif":  true,
+}
 
 func Init(accessKeyID, secretAccessKey, accountID, _bucketName string) {
 	endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID)
@@ -37,17 +45,31 @@ func GetKey(folder, filename string) string {
 	return fmt.Sprintf("%s/%s", folder, filename)
 }
 
-// GetCDNURL returns the public CDN URL for a given key.
 func GetCDNURL(key string) string {
 	return fmt.Sprintf("%s/%s", cdnBaseURL, key)
 }
 
-func GetPresignedUploadURL(key string, expiry time.Duration) (string, error) {
+// GetImageUploadURL generates a presigned upload URL and the final CDN URL for an image.
+// folder is the destination folder (e.g. "avatars"). contentType must be an allowed image type.
+func GetImageUploadURL(folder, contentType string) (uploadURL, cdnURL string, err error) {
+	if !allowedContentTypes[contentType] {
+		return "", "", fmt.Errorf("unsupported content type: %s", contentType)
+	}
+	key := GetKey(folder, uuid.New().String())
+	uploadURL, err = presignUpload(key, contentType, 15*time.Minute)
+	if err != nil {
+		return "", "", err
+	}
+	return uploadURL, GetCDNURL(key), nil
+}
+
+func presignUpload(key, contentType string, expiry time.Duration) (string, error) {
 	presigner := s3.NewPresignClient(c)
 	result, err := presigner.PresignPutObject(context.Background(),
 		&s3.PutObjectInput{
-			Bucket: &bucketName,
-			Key:    &key,
+			Bucket:      &bucketName,
+			Key:         &key,
+			ContentType: &contentType,
 		},
 		s3.WithPresignExpires(expiry),
 	)
