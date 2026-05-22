@@ -17,11 +17,11 @@ var bucketName string
 
 const cdnBaseURL = "image.buddiesnearby.com"
 
-func Init(accessKey, secretKey, accountID, _bucketName string) {
+func Init(accessKeyID, secretAccessKey, accountID, _bucketName string) {
 	endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID)
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion("auto"),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKey, secretKey, "")),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, secretAccessKey, "")),
 	)
 	if err != nil {
 		panic(err)
