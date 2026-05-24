@@ -33,17 +33,34 @@ func Init(accessKeyID, secretAccessKey, accountID string) {
 	log.Println("r2 client initialized")
 }
 
-func GetKey(folderName R2Folder, subjectID, imageID string) string {
-	return fmt.Sprintf("%s/%s/%s", folderName, subjectID, imageID)
+func GetCDNURL(folderName R2Folder, subjectID, imageID string, variant ImageVariant) string {
+	return fmt.Sprintf("https://%s/%s/%s/%s/%s_%s.webp", cdnBaseURL, bucketName, folderName, subjectID, imageID, variant)
 }
 
-func CreateImageUploadURLs(folderName R2Folder, subjectID, imageID string, contentType string) (uploadURL string, err error) {
+func GetKey(folderName R2Folder, subjectID, imageID string) string {
+	return fmt.Sprintf("%s/%s/%s/%s", bucketName, folderName, subjectID, imageID)
+}
+
+type ImageUploadInput struct {
+	ImageID     string
+	ContentType string
+}
+
+func CreateImageUploadURL(folderName R2Folder, subjectID, imageID, contentType string) (string, error) {
 	key := GetKey(folderName, subjectID, imageID)
-	uploadURL, err = presignUpload(key, contentType, 15*time.Minute)
-	if err != nil {
-		return "", err
+	return presignUpload(key, contentType, 15*time.Minute)
+}
+
+func CreateImageUploadURLs(folderName R2Folder, subjectID string, inputs []ImageUploadInput) ([]string, error) {
+	urls := make([]string, len(inputs))
+	for i, input := range inputs {
+		url, err := CreateImageUploadURL(folderName, subjectID, input.ImageID, input.ContentType)
+		if err != nil {
+			return nil, err
+		}
+		urls[i] = url
 	}
-	return uploadURL, nil
+	return urls, nil
 }
 
 func presignUpload(key, contentType string, expiry time.Duration) (string, error) {

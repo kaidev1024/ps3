@@ -2,6 +2,13 @@ package ps3
 
 type R2Folder string
 
+type ImageVariant string
+
+const (
+	ImageVariantLarge     ImageVariant = "large"
+	ImageVariantThumbnail ImageVariant = "thumbnail"
+)
+
 const (
 	R2FolderCollection  R2Folder = "collection"
 	R2FolderPost        R2Folder = "post"
