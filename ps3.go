@@ -10,22 +10,15 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/google/uuid"
 )
 
 var c *s3.Client
-var bucketName string
+
+var bucketName = "image"
 
 const cdnBaseURL = "image.buddiesnearby.com"
 
-var allowedContentTypes = map[string]bool{
-	"image/jpeg": true,
-	"image/png":  true,
-	"image/webp": true,
-	"image/gif":  true,
-}
-
-func Init(accessKeyID, secretAccessKey, accountID, _bucketName string) {
+func Init(accessKeyID, secretAccessKey, accountID string) {
 	endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID)
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion("auto"),
@@ -37,30 +30,20 @@ func Init(accessKeyID, secretAccessKey, accountID, _bucketName string) {
 	c = s3.NewFromConfig(cfg, func(o *s3.Options) {
 		o.BaseEndpoint = aws.String(endpoint)
 	})
-	bucketName = _bucketName
 	log.Println("r2 client initialized")
 }
 
-func GetKey(folder, filename string) string {
-	return fmt.Sprintf("%s/%s", folder, filename)
+func GetKey(folderName R2Folder, subjectID, imageID string) string {
+	return fmt.Sprintf("%s/%s/%s", folderName, subjectID, imageID)
 }
 
-func GetCDNURL(key string) string {
-	return fmt.Sprintf("%s/%s", cdnBaseURL, key)
-}
-
-// GetImageUploadURL generates a presigned upload URL and the final CDN URL for an image.
-// folder is the destination folder (e.g. "avatars"). contentType must be an allowed image type.
-func GetImageUploadURL(folder, contentType string) (uploadURL, cdnURL string, err error) {
-	if !allowedContentTypes[contentType] {
-		return "", "", fmt.Errorf("unsupported content type: %s", contentType)
-	}
-	key := GetKey(folder, uuid.New().String())
+func CreateImageUploadURLs(folderName R2Folder, subjectID, imageID string, contentType string) (uploadURL string, err error) {
+	key := GetKey(folderName, subjectID, imageID)
 	uploadURL, err = presignUpload(key, contentType, 15*time.Minute)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
-	return uploadURL, GetCDNURL(key), nil
+	return uploadURL, nil
 }
 
 func presignUpload(key, contentType string, expiry time.Duration) (string, error) {
