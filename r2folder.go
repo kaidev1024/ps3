@@ -2,11 +2,12 @@ package ps3
 
 type R2Folder string
 
-type ImageVariant string
+type ImageSize string
 
 const (
-	ImageVariantLarge     ImageVariant = "large"
-	ImageVariantThumbnail ImageVariant = "thumbnail"
+	ImageSizeSm ImageSize = "sm"
+	ImageSizeMd ImageSize = "md"
+	ImageSizeLg ImageSize = "lg"
 )
 
 const (

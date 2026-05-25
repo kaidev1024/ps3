@@ -33,8 +33,8 @@ func Init(accessKeyID, secretAccessKey, accountID string) {
 	log.Println("r2 client initialized")
 }
 
-func GetCDNURL(folderName R2Folder, imageID string, variant ImageVariant) string {
-	return fmt.Sprintf("https://%s/%s/%s/%s_%s.webp", cdnBaseURL, bucketName, folderName, imageID, variant)
+func GetCdnUrl(folderName R2Folder, imageID string, size ImageSize) string {
+	return fmt.Sprintf("https://%s/%s/%s/%s_%s.webp", cdnBaseURL, bucketName, folderName, imageID, size)
 }
 
 func GetKey(folderName R2Folder, imageID string) string {
