@@ -38,7 +38,7 @@ func GetCdnUrl(folderName R2Folder, imageID string, size ImageSize) string {
 }
 
 func GetKey(folderName R2Folder, imageID string) string {
-	return fmt.Sprintf("%s/%s/%s", bucketName, folderName, imageID)
+	return fmt.Sprintf("%s/%s", folderName, imageID)
 }
 
 type ImageUploadInput struct {
