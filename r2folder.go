@@ -21,4 +21,7 @@ const (
 	R2FolderArena       R2Folder = "arena"
 	R2FolderEvent       R2Folder = "event"
 	R2FolderComment     R2Folder = "comment"
+	R2FolderReply       R2Folder = "reply"
+	R2FolderRating      R2Folder = "rating"
+	R2FolderBroadcast   R2Folder = "broadcast"
 )
