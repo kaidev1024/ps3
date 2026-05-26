@@ -20,4 +20,5 @@ const (
 	R2FolderLeaderboard R2Folder = "leaderboard"
 	R2FolderArena       R2Folder = "arena"
 	R2FolderEvent       R2Folder = "event"
+	R2FolderComment     R2Folder = "comment"
 )
