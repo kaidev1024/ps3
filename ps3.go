@@ -14,8 +14,6 @@ import (
 
 var c *s3.Client
 
-var bucketName = "image"
-
 const cdnBaseURL = "image.buddiesnearby.com"
 
 func Init(accessKeyID, secretAccessKey, accountID string) {
@@ -33,37 +31,7 @@ func Init(accessKeyID, secretAccessKey, accountID string) {
 	log.Println("r2 client initialized")
 }
 
-func GetCdnUrl(folderName R2Folder, creationHour int32, imageID string, size ImageSize) string {
-	return fmt.Sprintf("https://%s/%s/%s/%d/%s_%s.webp", cdnBaseURL, bucketName, folderName, creationHour, imageID, size)
-}
-
-func GetKey(folderName R2Folder, creationHour int32, imageID string) string {
-	return fmt.Sprintf("%s/%d/%s", folderName, creationHour, imageID)
-}
-
-type ImageUploadInput struct {
-	ImageID      string
-	ContentType  string
-	CreationHour int32
-}
-
-func CreateImageUploadURL(folderName R2Folder, creationHour int32, imageID, contentType string) (string, error) {
-	return presignUpload(GetKey(folderName, creationHour, imageID), contentType, 15*time.Minute)
-}
-
-func CreateImageUploadURLs(folderName R2Folder, inputs []ImageUploadInput) ([]string, error) {
-	urls := make([]string, len(inputs))
-	for i, input := range inputs {
-		url, err := CreateImageUploadURL(folderName, input.CreationHour, input.ImageID, input.ContentType)
-		if err != nil {
-			return nil, err
-		}
-		urls[i] = url
-	}
-	return urls, nil
-}
-
-func presignUpload(key, contentType string, expiry time.Duration) (string, error) {
+func presignUpload(key, contentType, bucketName string) (string, error) {
 	presigner := s3.NewPresignClient(c)
 	result, err := presigner.PresignPutObject(context.Background(),
 		&s3.PutObjectInput{
@@ -71,7 +39,7 @@ func presignUpload(key, contentType string, expiry time.Duration) (string, error
 			Key:         &key,
 			ContentType: &contentType,
 		},
-		s3.WithPresignExpires(expiry),
+		s3.WithPresignExpires(15*time.Minute),
 	)
 	if err != nil {
 		return "", err
