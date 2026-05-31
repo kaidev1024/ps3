@@ -1,14 +1,11 @@
 package ps3
 
-import "fmt"
-
 const pageBucketName = "page"
 
 func CreatePageImageUploadURLs(folder PageR2Folder, inputs []ImageUploadInput) ([]string, error) {
 	urls := make([]string, len(inputs))
 	for i, input := range inputs {
-		imageKey := fmt.Sprintf("%s/%s", input.PageID, input.ImageID)
-		url, err := presignUpload(imageKey, input.ContentType, pageBucketName)
+		url, err := presignUpload(getImageKey(input.PageID, input.ImageID), input.ContentType, pageBucketName)
 		if err != nil {
 			return nil, err
 		}
