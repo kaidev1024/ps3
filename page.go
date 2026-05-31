@@ -4,7 +4,13 @@ import "fmt"
 
 const pageBucketName = "page"
 
-func CreatePageImageUploadURLs(folder PageR2Folder, inputs []ImageUploadInput) ([]string, error) {
+type PageImageUploadInput struct {
+	ImageID     string
+	PageID      string
+	ContentType string
+}
+
+func CreatePageImageUploadURLs(folder PageR2Folder, inputs []PageImageUploadInput) ([]string, error) {
 	urls := make([]string, len(inputs))
 	for i, input := range inputs {
 		imageKey := fmt.Sprintf("%s/%s/%s", folder, input.PageID, input.ImageID)
