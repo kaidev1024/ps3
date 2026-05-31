@@ -6,16 +6,13 @@ import (
 
 const avatarBucketName = "avatar"
 
-type AvatarUploadInput struct {
+type ImageUploadInput struct {
 	ImageID     string
 	PageID      string
 	ContentType string
 }
 
 func CreateAvatarUploadURL(pageID, imageID, contentType string) (string, error) {
-	return presignUpload(getAvatarKey(pageID, imageID), contentType, avatarBucketName)
-}
-
-func getAvatarKey(pageID, imageID string) string {
-	return fmt.Sprintf("%s/%s", pageID, imageID)
+	imageKey := fmt.Sprintf("%s/%s", pageID, imageID)
+	return presignUpload(imageKey, contentType, avatarBucketName)
 }

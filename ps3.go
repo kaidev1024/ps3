@@ -14,8 +14,6 @@ import (
 
 var c *s3.Client
 
-const cdnBaseURL = "image.buddiesnearby.com"
-
 func Init(accessKeyID, secretAccessKey, accountID string) {
 	endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID)
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
