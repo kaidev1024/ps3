@@ -11,7 +11,7 @@ import (
 )
 
 // DownloadImageFromR2 fetches an image from R2 storage.
-func DownloadImageFromR2(ctx context.Context, key, bucketName string) ([]byte, string, error) {
+func downloadImageFromR2(ctx context.Context, key, bucketName string) ([]byte, string, error) {
 	resp, err := c.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: aws.String(bucketName),
 		Key:    aws.String(key),
@@ -31,7 +31,7 @@ func DownloadImageFromR2(ctx context.Context, key, bucketName string) ([]byte, s
 }
 
 // UploadImageToR2 uploads image bytes directly to R2.
-func UploadImageToR2(ctx context.Context, key, bucketName string, data []byte) error {
+func uploadImageToR2(ctx context.Context, key, bucketName string, data []byte) error {
 	_, err := c.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(bucketName),
 		Key:         aws.String(key),
