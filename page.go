@@ -2,7 +2,9 @@ package ps3
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"sync"
 )
 
 const pageBucketName = "page"
@@ -33,6 +35,20 @@ func DownloadPageImage(ctx context.Context, folder PageR2Folder, pageID, imageID
 	return downloadImageFromR2(ctx, getPageImageKey(folder, pageID, imageID), pageBucketName)
 }
 
-func UploadPageImage(ctx context.Context, folder PageR2Folder, pageID, imageID string, data []byte) error {
-	return uploadImageToR2(ctx, getPageImageKey(folder, pageID, imageID), pageBucketName, data)
+func UploadPageImages(ctx context.Context, folder PageR2Folder, pageID, imageID string, images [][]byte) error {
+	if len(images) != 3 {
+		return fmt.Errorf("expected 3 images (sm, md, lg), got %d", len(images))
+	}
+	errs := make([]error, len(imageSizes))
+	var wg sync.WaitGroup
+	for i, size := range imageSizes {
+		wg.Add(1)
+		go func(i int, size ImageSize) {
+			defer wg.Done()
+			key := getPageImageKey(folder, pageID, appendImageSize(imageID, size))
+			errs[i] = uploadImageToR2(ctx, key, pageBucketName, images[i])
+		}(i, size)
+	}
+	wg.Wait()
+	return errors.Join(errs...)
 }
