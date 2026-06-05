@@ -17,5 +17,5 @@ var imageSizes []ImageSize = []ImageSize{
 }
 
 func appendImageSize(imageID string, imageSize ImageSize) string {
-	return fmt.Sprintf("%s/%s", imageID, imageSize)
+	return fmt.Sprintf("%s_%s", imageID, imageSize)
 }
