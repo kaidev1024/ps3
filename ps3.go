@@ -29,13 +29,13 @@ func Init(accessKeyID, secretAccessKey, accountID string) {
 	log.Println("r2 client initialized")
 }
 
-func presignUpload(key, contentType, bucketName string) (string, error) {
+func presignUpload(key, bucketName string) (string, error) {
 	presigner := s3.NewPresignClient(c)
 	result, err := presigner.PresignPutObject(context.Background(),
 		&s3.PutObjectInput{
 			Bucket:      &bucketName,
 			Key:         &key,
-			ContentType: &contentType,
+			ContentType: aws.String("image/webp"),
 		},
 		s3.WithPresignExpires(15*time.Minute),
 	)

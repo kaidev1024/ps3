@@ -13,9 +13,10 @@ const (
 var imageSizes []ImageSize = []ImageSize{
 	ImageSizeSm,
 	ImageSizeMd,
-	ImageSizeLg,
 }
 
+const IMAGES_LEN = 2
+
 func appendImageSize(imageID string, imageSize ImageSize) string {
-	return fmt.Sprintf("%s_%s.webp", imageID, imageSize)
+	return fmt.Sprintf("%s/%s.webp", imageID, imageSize)
 }

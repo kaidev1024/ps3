@@ -11,16 +11,16 @@ const avatarBucketName = "avatar"
 
 var avatarImageSizes = []ImageSize{ImageSizeSm, ImageSizeMd}
 
-func getAvatarImageKey(folder AvatarR2Folder, pageID, imageID string) string {
-	return fmt.Sprintf("%s/%s/%s", folder, pageID, imageID)
+func getAvatarImageKey(folder AvatarR2Folder, pageID, imageID string, imageSize ImageSize) string {
+	return fmt.Sprintf("%s/%s/%s/%s.webp", folder, pageID, imageID, imageSize)
 }
 
-func CreateAvatarUploadURL(folder AvatarR2Folder, pageID, imageID, contentType string) (string, error) {
-	return presignUpload(getAvatarImageKey(folder, pageID, imageID), contentType, avatarBucketName)
+func CreateAvatarUploadURL(folder AvatarR2Folder, pageID, imageID string) (string, error) {
+	return presignUpload(getAvatarImageKey(folder, pageID, imageID, ImageSizeLg), avatarBucketName)
 }
 
 func DownloadAvatarImage(ctx context.Context, folder AvatarR2Folder, pageID, imageID string) ([]byte, string, error) {
-	return downloadImageFromR2(ctx, getAvatarImageKey(folder, pageID, imageID), avatarBucketName)
+	return downloadImageFromR2(ctx, getAvatarImageKey(folder, pageID, imageID, ImageSizeLg), avatarBucketName)
 }
 
 func UploadAvatarImages(ctx context.Context, folder AvatarR2Folder, pageID, imageID string, images [][]byte) error {
@@ -33,7 +33,7 @@ func UploadAvatarImages(ctx context.Context, folder AvatarR2Folder, pageID, imag
 		wg.Add(1)
 		go func(i int, size ImageSize) {
 			defer wg.Done()
-			key := getAvatarImageKey(folder, pageID, appendImageSize(imageID, size))
+			key := getAvatarImageKey(folder, pageID, imageID, size)
 			errs[i] = uploadImageToR2(ctx, key, avatarBucketName, images[i])
 		}(i, size)
 	}
