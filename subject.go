@@ -11,7 +11,6 @@ const subjectBucketName = "subject"
 
 type SubjectImageUploadInput struct {
 	ImageID      string
-	ContentType  string
 	CreationHour int32
 }
 

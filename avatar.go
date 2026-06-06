@@ -9,8 +9,6 @@ import (
 
 const avatarBucketName = "avatar"
 
-var avatarImageSizes = []ImageSize{ImageSizeSm, ImageSizeMd}
-
 func getAvatarImageKey(folder AvatarR2Folder, pageID, imageID string, imageSize ImageSize) string {
 	return fmt.Sprintf("%s/%s/%s/%s.webp", folder, pageID, imageID, imageSize)
 }
@@ -24,12 +22,12 @@ func DownloadAvatarImage(ctx context.Context, folder AvatarR2Folder, pageID, ima
 }
 
 func UploadAvatarImages(ctx context.Context, folder AvatarR2Folder, pageID, imageID string, images [][]byte) error {
-	if len(images) != 2 {
+	if len(images) != IMAGES_LEN {
 		return fmt.Errorf("expected 2 images (sm, md), got %d", len(images))
 	}
-	errs := make([]error, len(avatarImageSizes))
+	errs := make([]error, len(imageSizes))
 	var wg sync.WaitGroup
-	for i, size := range avatarImageSizes {
+	for i, size := range imageSizes {
 		wg.Add(1)
 		go func(i int, size ImageSize) {
 			defer wg.Done()

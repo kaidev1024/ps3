@@ -10,9 +10,8 @@ import (
 const pageBucketName = "page"
 
 type PageImageUploadInput struct {
-	ImageID     string
-	PageID      string
-	ContentType string
+	ImageID string
+	PageID  string
 }
 
 func getPageImageKey(folder PageR2Folder, pageID, imageID string, imageSize ImageSize) string {
