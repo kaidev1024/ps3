@@ -17,7 +17,7 @@ func CreateAvatarUploadURL(folder AvatarR2Folder, pageID, imageID string) (strin
 	return presignUpload(getAvatarImageKey(folder, pageID, imageID, ImageSizeLg), avatarBucketName)
 }
 
-func DownloadAvatarImage(ctx context.Context, folder AvatarR2Folder, pageID, imageID string) ([]byte, string, error) {
+func DownloadAvatarImage(ctx context.Context, folder AvatarR2Folder, pageID, imageID string) ([]byte, error) {
 	return downloadImageFromR2(ctx, getAvatarImageKey(folder, pageID, imageID, ImageSizeLg), avatarBucketName)
 }
 
