@@ -30,7 +30,7 @@ func CreatePageImageUploadURLs(folder PageR2Folder, inputs []PageImageUploadInpu
 	return urls, nil
 }
 
-func DownloadPageImage(ctx context.Context, folder PageR2Folder, pageID, imageID string) ([]byte, string, error) {
+func DownloadPageImage(ctx context.Context, folder PageR2Folder, pageID, imageID string) ([]byte, error) {
 	return downloadImageFromR2(ctx, getPageImageKey(folder, pageID, imageID, ImageSizeLg), pageBucketName)
 }
 

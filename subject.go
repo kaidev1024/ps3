@@ -30,7 +30,7 @@ func CreateSubjectImageUploadURLs(folder SubjectR2Folder, inputs []SubjectImageU
 	return urls, nil
 }
 
-func DownloadSubjectImage(ctx context.Context, folder SubjectR2Folder, creationHour int32, imageID string) ([]byte, string, error) {
+func DownloadSubjectImage(ctx context.Context, folder SubjectR2Folder, creationHour int32, imageID string) ([]byte, error) {
 	return downloadImageFromR2(ctx, getSubjectImageKey(folder, creationHour, imageID, ImageSizeLg), subjectBucketName)
 }
 
